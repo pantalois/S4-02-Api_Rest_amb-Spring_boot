@@ -15,7 +15,6 @@ public class FruitServiceImpl implements FruitService {
 
     @Override
     public Fruit createFruit(Fruit fruit) {
-        fruitRepository.save(fruit);
-        return fruit; //Debería guardar el objeto creado por la base de datos.
+        return fruitRepository.save(fruit);
     }
 }
