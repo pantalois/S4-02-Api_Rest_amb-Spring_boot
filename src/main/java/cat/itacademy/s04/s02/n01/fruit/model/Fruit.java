@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -20,8 +22,10 @@ public class Fruit {
     private Long id;
 
     @NonNull
+    @NotBlank
     private String name;
 
     @NonNull
+    @Positive
     private int weightInKilos;
 }
