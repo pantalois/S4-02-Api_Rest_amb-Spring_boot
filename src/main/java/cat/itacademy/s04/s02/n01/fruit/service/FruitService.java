@@ -3,5 +3,5 @@ package cat.itacademy.s04.s02.n01.fruit.service;
 import cat.itacademy.s04.s02.n01.fruit.model.Fruit;
 
 public interface FruitService {
-    Fruit save(Fruit fruit);
+    Fruit createFruit(Fruit fruit);
 }
