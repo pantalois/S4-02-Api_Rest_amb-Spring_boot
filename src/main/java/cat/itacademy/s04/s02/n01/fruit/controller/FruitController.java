@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class FruitController {
 
@@ -13,6 +15,11 @@ public class FruitController {
 
     public FruitController(FruitService fruitService) {
         this.fruitService = fruitService;
+    }
+
+    @GetMapping("/fruits")
+    public List<Fruit> getAllFruits() {
+        return fruitService.listAllFruits();
     }
 
     @PostMapping("/fruits")
