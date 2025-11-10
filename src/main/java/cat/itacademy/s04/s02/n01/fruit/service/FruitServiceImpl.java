@@ -21,7 +21,7 @@ public class FruitServiceImpl implements FruitService {
     }
 
     @Override
-    public List<Fruit> listAllFruits() {
+    public List<Fruit> listAllFruits(String name) {
         return fruitRepository.findAll();
     }
 }

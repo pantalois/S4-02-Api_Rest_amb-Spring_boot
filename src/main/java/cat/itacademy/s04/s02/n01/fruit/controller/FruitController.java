@@ -18,8 +18,11 @@ public class FruitController {
     }
 
     @GetMapping("/fruits")
-    public List<Fruit> getAllFruits() {
-        return fruitService.listAllFruits();
+    public List<Fruit> getAllFruits(@RequestParam(required = false) String name) {
+        List<Fruit> fruits = fruitService.listAllFruits(name == null ? "" : name );
+        return fruits.stream()
+                .filter(fruitName -> name == null || name.isBlank() || fruitName.getName().toLowerCase().contains(name.toLowerCase()))
+                .toList();
     }
 
     @PostMapping("/fruits")

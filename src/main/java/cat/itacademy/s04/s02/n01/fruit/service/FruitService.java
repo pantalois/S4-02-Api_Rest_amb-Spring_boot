@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface FruitService {
     Fruit createFruit(Fruit fruit);
-    List<Fruit> listAllFruits();
+    List<Fruit> listAllFruits(String name);
 }
