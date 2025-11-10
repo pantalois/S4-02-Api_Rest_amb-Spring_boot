@@ -5,6 +5,7 @@ import cat.itacademy.s04.s02.n01.fruit.repository.FruitRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FruitServiceImpl implements FruitService {
@@ -23,5 +24,10 @@ public class FruitServiceImpl implements FruitService {
     @Override
     public List<Fruit> listAllFruits(String name) {
         return fruitRepository.findAll();
+    }
+
+    @Override
+    public Optional<Fruit> getFruitById(Long id) {
+        return fruitRepository.findById(id);
     }
 }

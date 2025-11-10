@@ -14,6 +14,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -84,8 +85,30 @@ public class FruitControllerTest {
     }
 
     @Test
-    void getFruitById_whenThereIsNoData_thenReturn200AndFruitDetails() throws Exception {
+    void getAllFruits_whenThereIsNoData_thenReturn200AndFruitDetails() throws Exception {
         mockMvc.perform(get("/fruits"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void getFruitById_whenThereIsData_thenReturn200AndFruitDetails() throws Exception {
+        Fruit fruit = new Fruit("Apple", 1);
+
+        when(fruitRepository.findById(1L)).thenReturn(Optional.of(fruit));
+
+        mockMvc.perform(get("/fruits/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Apple"))
+                .andExpect(jsonPath("$.weightInKilos").value(1));
+    }
+
+    @Test
+    void getFruitById_whenThereIsNoValidData_thenReturn404AndCustomMessage() throws Exception {
+        when(fruitRepository.findById(1L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/fruits/1"))
+                .andExpect(status().isNotFound())
+                .andExpect(status().reason("Fruit not found"));
+
     }
 }
