@@ -23,7 +23,10 @@ public class FruitServiceImpl implements FruitService {
 
     @Override
     public List<Fruit> listAllFruits(String name) {
-        return fruitRepository.findAll();
+        if (name == null || name.isEmpty()) {
+            return fruitRepository.findAll();
+        }
+        return fruitRepository.findByNameContainingIgnoreCase(name);
     }
 
     @Override

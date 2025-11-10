@@ -4,11 +4,11 @@ import cat.itacademy.s04.s02.n01.fruit.model.Fruit;
 import cat.itacademy.s04.s02.n01.fruit.service.FruitService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class FruitController {
@@ -20,11 +20,9 @@ public class FruitController {
     }
 
     @GetMapping("/fruits")
-    public List<Fruit> getAllFruits(@RequestParam(required = false) String name) {
-        List<Fruit> fruits = fruitService.listAllFruits(name == null ? "" : name );
-        return fruits.stream()
-                .filter(fruitName -> name == null || name.isBlank() || fruitName.getName().toLowerCase().contains(name.toLowerCase()))
-                .toList();
+    public ResponseEntity<List<Fruit>> getAllFruits(@RequestParam(required = false) String name) {
+        List<Fruit> fruits = fruitService.listAllFruits(name);
+        return ResponseEntity.ok(fruits);
     }
 
     @GetMapping("/fruits/{id}")
@@ -34,9 +32,10 @@ public class FruitController {
     }
 
     @PostMapping("/fruits")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Fruit addFruit(@Valid @RequestBody Fruit fruit) {
-        return fruitService.createFruit(fruit);
+    public ResponseEntity<Fruit> addFruit(@Valid @RequestBody Fruit fruit) {
+        Fruit createdFruit = fruitService.createFruit(fruit);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFruit);
     }
+
 
 }
