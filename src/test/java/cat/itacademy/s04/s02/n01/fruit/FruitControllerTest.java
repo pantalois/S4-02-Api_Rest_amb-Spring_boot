@@ -119,5 +119,18 @@ public class FruitControllerTest {
 
     @Test
     void updateFruit_whenDataIsValid_thenReturn200AndFruitDetails() throws Exception {
+        Long id = 1L;
+        Fruit updatedFruit = new Fruit("Banana", 5);
+        updatedFruit.setId(id);
+
+        when(fruitService.updateFruit(eq(id), any(Fruit.class))).thenReturn(updatedFruit);
+
+        mockMvc.perform(put("/fruits/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatedFruit)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Banana"))
+                .andExpect(jsonPath("$.weightInKilos").value(5));
     }
 }
