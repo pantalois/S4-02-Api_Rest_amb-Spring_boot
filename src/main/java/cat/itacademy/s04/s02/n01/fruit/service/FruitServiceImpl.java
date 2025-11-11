@@ -1,5 +1,10 @@
 package cat.itacademy.s04.s02.n01.fruit.service;
 
+import cat.itacademy.s04.s02.n01.fruit.dto.FruitCreateRequest;
+import cat.itacademy.s04.s02.n01.fruit.dto.FruitResponse;
+import cat.itacademy.s04.s02.n01.fruit.dto.FruitUpdateRequest;
+import cat.itacademy.s04.s02.n01.fruit.exception.FruitNotFoundException;
+import cat.itacademy.s04.s02.n01.fruit.mapper.FruitMapper;
 import cat.itacademy.s04.s02.n01.fruit.model.Fruit;
 import cat.itacademy.s04.s02.n01.fruit.repository.FruitRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,38 +20,46 @@ import java.util.Optional;
 public class FruitServiceImpl implements FruitService {
 
     private final FruitRepository fruitRepository;
+    private final FruitMapper fruitMapper;
 
-    public FruitServiceImpl(FruitRepository fruitRepository) {
+    public FruitServiceImpl(FruitRepository fruitRepository, FruitMapper fruitMapper) {
         this.fruitRepository = fruitRepository;
+        this.fruitMapper = fruitMapper;
     }
 
     @Override
-    public Fruit createFruit(Fruit fruit) {
-        return fruitRepository.save(fruit);
+    public FruitResponse createFruit(FruitCreateRequest request) {
+        Fruit saved = fruitRepository.save(fruitMapper.toEntity(request));
+        return fruitMapper.toResponse(saved);
     }
 
     @Override
-    public List<Fruit> listAllFruits(String name) {
+    public List<FruitResponse> listAllFruits(String name) {
         if (name == null || name.isEmpty()) {
-            return fruitRepository.findAll();
+            return fruitRepository.findAll()
+                    .stream()
+                    .map(fruitMapper::toResponse)
+                    .toList();
         }
-        return fruitRepository.findByNameContainingIgnoreCase(name);
+        return fruitRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(fruitMapper::toResponse)
+                .toList();
     }
 
     @Override
-    public Optional<Fruit> getFruitById(Long id) {
-        return fruitRepository.findById(id);
-    }
-
-    @Override
-    public Fruit updateFruit(Long id, Fruit fruit) {
-        Fruit existing = fruitRepository.findById(id)
+    public FruitResponse getFruitById(Long id) {
+        Fruit fruit = fruitRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fruit not found"));
+        return fruitMapper.toResponse(fruit);
+    }
 
-        existing.setName(fruit.getName());
-        existing.setWeightInKilos(fruit.getWeightInKilos());
-
-        return fruitRepository.save(existing);
+    @Override
+    public FruitResponse updateFruit(Long id, FruitUpdateRequest request) {
+        Fruit fruit = fruitRepository.findById(id)
+                .orElseThrow(() -> new FruitNotFoundException("Fruit not found"));
+        fruitMapper.updateEntity(request, fruit);
+        return fruitMapper.toResponse(fruitRepository.save(fruit));
     }
 
     @Override

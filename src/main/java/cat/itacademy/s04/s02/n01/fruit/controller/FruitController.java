@@ -1,5 +1,8 @@
 package cat.itacademy.s04.s02.n01.fruit.controller;
 
+import cat.itacademy.s04.s02.n01.fruit.dto.FruitCreateRequest;
+import cat.itacademy.s04.s02.n01.fruit.dto.FruitResponse;
+import cat.itacademy.s04.s02.n01.fruit.dto.FruitUpdateRequest;
 import cat.itacademy.s04.s02.n01.fruit.model.Fruit;
 import cat.itacademy.s04.s02.n01.fruit.service.FruitService;
 import jakarta.validation.Valid;
@@ -20,27 +23,24 @@ public class FruitController {
     }
 
     @GetMapping("/fruits")
-    public ResponseEntity<List<Fruit>> getAllFruits(@RequestParam(required = false) String name) {
-        List<Fruit> fruits = fruitService.listAllFruits(name);
-        return ResponseEntity.ok(fruits);
+    public ResponseEntity<List<FruitResponse>> getAllFruits(@RequestParam(required = false) String name) {
+        return ResponseEntity.ok(fruitService.listAllFruits(name));
     }
 
     @GetMapping("/fruits/{id}")
-    public Fruit getFruitById(@PathVariable Long id) {
-        return fruitService.getFruitById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fruit not found"));
+    public ResponseEntity<FruitResponse> getFruitById(@PathVariable Long id) {
+        return ResponseEntity.ok(fruitService.getFruitById(id));
     }
 
     @PostMapping("/fruits")
-    public ResponseEntity<Fruit> addFruit(@Valid @RequestBody Fruit fruit) {
-        Fruit createdFruit = fruitService.createFruit(fruit);
+    public ResponseEntity<FruitResponse> addFruit(@Valid @RequestBody FruitCreateRequest request) {
+        FruitResponse createdFruit = fruitService.createFruit(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFruit);
     }
 
     @PutMapping("/fruits/{id}")
-    public ResponseEntity<Fruit> updateFruit(@PathVariable("id") Long id, @RequestBody @Valid Fruit fruit) {
-        Fruit updatedFruit = fruitService.updateFruit(id, fruit);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedFruit);
+    public ResponseEntity<FruitResponse> updateFruit(@PathVariable("id") Long id, @RequestBody @Valid FruitUpdateRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(fruitService.updateFruit(id, request));
     }
 
     @DeleteMapping("/fruits/{id}")
