@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,6 +36,9 @@ public class FruitControllerTest {
 
     @MockitoBean
     FruitRepository fruitRepository;
+
+    @MockitoBean
+    FruitService fruitService;
 
     @BeforeEach
     void deleteAll() {
@@ -110,5 +115,9 @@ public class FruitControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(status().reason("Fruit not found"));
 
+    }
+
+    @Test
+    void updateFruit_whenDataIsValid_thenReturn200AndFruitDetails() throws Exception {
     }
 }

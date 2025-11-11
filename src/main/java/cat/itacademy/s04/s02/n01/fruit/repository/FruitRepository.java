@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface FruitRepository extends JpaRepository<Fruit, Long> {
     List<Fruit> findByNameContainingIgnoreCase(String name);
-
 }
