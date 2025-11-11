@@ -1,14 +1,17 @@
 package cat.itacademy.s04.s02.n01.fruit.controller;
 
+import cat.itacademy.s04.s02.n01.fruit.dto.FruitCreateRequest;
+import cat.itacademy.s04.s02.n01.fruit.dto.FruitResponse;
+import cat.itacademy.s04.s02.n01.fruit.dto.FruitUpdateRequest;
 import cat.itacademy.s04.s02.n01.fruit.model.Fruit;
 import cat.itacademy.s04.s02.n01.fruit.service.FruitService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class FruitController {
@@ -20,23 +23,31 @@ public class FruitController {
     }
 
     @GetMapping("/fruits")
-    public List<Fruit> getAllFruits(@RequestParam(required = false) String name) {
-        List<Fruit> fruits = fruitService.listAllFruits(name == null ? "" : name );
-        return fruits.stream()
-                .filter(fruitName -> name == null || name.isBlank() || fruitName.getName().toLowerCase().contains(name.toLowerCase()))
-                .toList();
+    public ResponseEntity<List<FruitResponse>> getAllFruits(@RequestParam(required = false) String name) {
+        return ResponseEntity.ok(fruitService.listAllFruits(name));
     }
 
     @GetMapping("/fruits/{id}")
-    public Fruit getFruitById(@PathVariable Long id) {
-        return fruitService.getFruitById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fruit not found"));
+    public ResponseEntity<FruitResponse> getFruitById(@PathVariable Long id) {
+        return ResponseEntity.ok(fruitService.getFruitById(id));
     }
 
     @PostMapping("/fruits")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Fruit addFruit(@Valid @RequestBody Fruit fruit) {
-        return fruitService.createFruit(fruit);
+    public ResponseEntity<FruitResponse> addFruit(@Valid @RequestBody FruitCreateRequest request) {
+        FruitResponse createdFruit = fruitService.createFruit(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFruit);
     }
+
+    @PutMapping("/fruits/{id}")
+    public ResponseEntity<FruitResponse> updateFruit(@PathVariable("id") Long id, @RequestBody @Valid FruitUpdateRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(fruitService.updateFruit(id, request));
+    }
+
+    @DeleteMapping("/fruits/{id}")
+    public ResponseEntity<Void> deleteFruit(@PathVariable("id") Long id) {
+        fruitService.deleteFruit(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 
 }

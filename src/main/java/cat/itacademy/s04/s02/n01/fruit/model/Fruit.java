@@ -5,11 +5,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -23,6 +21,7 @@ public class Fruit {
 
     @NonNull
     @NotBlank
+    @Pattern(regexp = "^[^0-9]*$", message = "El nombre no puede contener números")
     private String name;
 
     @NonNull
