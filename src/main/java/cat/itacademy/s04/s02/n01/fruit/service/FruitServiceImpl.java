@@ -22,7 +22,6 @@ public class FruitServiceImpl implements FruitService {
 
     @Override
     public Fruit createFruit(Fruit fruit) {
-
         return fruitRepository.save(fruit);
     }
 
@@ -48,5 +47,12 @@ public class FruitServiceImpl implements FruitService {
         existing.setWeightInKilos(fruit.getWeightInKilos());
 
         return fruitRepository.save(existing);
+    }
+
+    @Override
+    public void deleteFruit(Long id) {
+        fruitRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fruit not found"));
+        fruitRepository.deleteById(id);
     }
 }

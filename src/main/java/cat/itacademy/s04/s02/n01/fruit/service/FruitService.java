@@ -10,4 +10,5 @@ public interface FruitService {
     List<Fruit> listAllFruits(String name);
     Optional<Fruit> getFruitById(Long id);
     Fruit updateFruit(Long id, Fruit fruit);
+    void deleteFruit(Long id);
 }
